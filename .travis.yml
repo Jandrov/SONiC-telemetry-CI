@@ -6,6 +6,7 @@ services:
   - docker
   
 install:
+  - sudo apt-get update && apt-get install -y net-tools
   - ./install_docker_ovs.sh
   - ./load_image.sh
   
