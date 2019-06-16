@@ -1,4 +1,4 @@
-#wget https://sonic-jenkins.westus2.cloudapp.azure.com/job/p4/job/buildimage-p4-all/613/artifact/target/docker-sonic-p4.gz
+wget https://sonic-jenkins.westus2.cloudapp.azure.com/job/p4/job/buildimage-p4-all/613/artifact/target/docker-sonic-p4.gz
 sudo docker load < docker-sonic-p4.gz
 sudo docker pull ubuntu:14.04
 
