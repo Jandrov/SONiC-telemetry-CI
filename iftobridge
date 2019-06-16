@@ -1,0 +1,194 @@
+#!/bin/bash
+# Copyright (C) 2014 Nicira, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at:
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Check for programs we'll need.
+search_path () {
+    save_IFS=$IFS
+    IFS=:
+    for dir in $PATH; do
+        IFS=$save_IFS
+        if test -x "$dir/$1"; then
+            return 0
+        fi
+    done
+    IFS=$save_IFS
+    echo >&2 "$0: $1 not found in \$PATH, please install and try again"
+    exit 1
+}
+
+ovs_vsctl () {
+    ovs-vsctl --timeout=60 "$@"
+}
+
+create_netns_link () {
+    mkdir -p /var/run/netns
+    if [ ! -e /var/run/netns/"$SPID" ]; then
+        ln -s /proc/"$SPID"/ns/net /var/run/netns/"$SPID"
+        trap 'delete_netns_link_source' 0
+        for signal in 1 2 3 13 14 15; do
+            trap 'delete_netns_link_source; trap - $signal; kill -$signal $$' $signal
+        done
+    fi
+}
+
+delete_netns_link_source () {
+    rm -f /var/run/netns/"$SPID"
+}
+
+add_port () {
+    SINT="$1"
+    SCNT="$2"
+    BRIDGE="$3"
+
+    if [ -z "$SINT" ] || [ -z "$SCNT" ]; then
+        echo >&2 "$UTIL add-link: not enough arguments (use --help for help)"
+        exit 1
+    fi
+
+    shift 3
+    while [ $# -ne 0 ]; do
+        case $1 in
+            --sip=*)
+                SADDR=`expr X"$1" : 'X[^=]*=\(.*\)'`
+                shift
+                ;;
+            *)
+                echo >&2 "$UTIL add-link: unknown option \"$1\""
+                exit 1
+                ;;
+        esac
+    done
+
+    if [ -z "$SADDR" ]; then
+        echo >&2 "$UTIL add-link: not enough arguments (use --help for help)"
+        exit 1
+    fi
+
+    # Commented we assume it already exists
+    #if brctl addbr "$BRIDGE" ; then :; else
+    #    echo >&2 "$UTIL: Failed to add bridge $BRIDGE"
+    #    exit 1
+    #fi
+
+    if SPID=`docker inspect -f '{{.State.Pid}}' "$SCNT"`; then :; else
+        echo >&2 "$UTIL: Failed to get the PID of the container"
+        exit 1
+    fi
+
+    create_netns_link
+
+    # Create a veth pair.
+    asp="${SCNT}_${SINT}"
+    asp2=`echo "$asp" | md5sum | cut -f1 -d" "`
+    SPORTNAME=${asp2:0:12}
+
+    ip link add "${SPORTNAME}_l" type veth peer name "${SPORTNAME}_c"
+    
+    # Add one end of veth to OVS bridge.
+    if brctl addif "$BRIDGE" "${SPORTNAME}_l"; then :; else
+        echo >&2 "$UTIL: Failed to add "${SPORTNAME}_l" port to bridge $BRIDGE"
+        ip link delete "${SPORTNAME}_l"
+        exit 1
+    fi
+
+    ip link set "${SPORTNAME}_l" up
+    
+    # Move "${PORTNAME}_c" inside the container and changes its name.
+    ip link set "${SPORTNAME}_c" netns "$SPID"
+    ip netns exec "$SPID" ip link set dev "${SPORTNAME}_c" name "$SINT"
+    ip netns exec "$SPID" ip link set "$SINT" up
+
+    if [ -n "$SADDR" ]; then
+        ip netns exec "$SPID" ip addr add "$SADDR" dev "$SINT"
+    fi
+
+    # This is "just in case..."
+    ifconfig "$BRIDGE" up
+
+    # This is also "just in case..."
+    sudo iptables -A FORWARD -p all -i "$BRIDGE" -j ACCEPT
+
+}
+
+del_port () {
+    SINT="$1"
+    SCNT="$2"
+
+    if [ "$#" -lt 2 ]; then
+        usage
+        exit 1
+    fi
+
+    asp="${SCNT}_${SINT}"
+    asp2=`echo "$asp" | md5sum | cut -f1 -d" "`
+    SPORT=${asp2:0:12}
+
+
+    ip link delete "${SPORT}_l"
+}
+
+
+usage() {
+    cat << EOF
+${UTIL}: Performs integration of Open vSwitch with Docker.
+usage: ${UTIL} COMMAND
+
+Commands:
+
+  add-link SINT SCNT BRIDGE --sip="ADDRESS"
+                    
+  del-link SINT SCNT
+
+Options:
+  -h, --help        display this help message.
+EOF
+}
+
+UTIL=$(basename $0)
+search_path brctl
+search_path docker
+search_path uuidgen
+
+if (ip netns) > /dev/null 2>&1; then :; else
+    echo >&2 "$UTIL: ip utility not found (or it does not support netns),"\
+             "cannot proceed"
+    exit 1
+fi
+
+if [ $# -eq 0 ]; then
+    usage
+    exit 0
+fi
+
+case $1 in
+    "add-link")
+        shift
+        add_port "$@"
+        exit 0
+        ;;
+    "del-link")
+        shift
+        del_port "$@"
+        exit 0
+        ;;
+    -h | --help)
+        usage
+        exit 0
+        ;;
+    *)
+        echo >&2 "$UTIL: unknown command \"$1\" (use --help for help)"
+        exit 1
+        ;;
+esac

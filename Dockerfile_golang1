@@ -1,0 +1,7 @@
+FROM golang:alpine
+
+RUN apk add git
+RUN go get github.com/jipanyang/gnxi/gnmi_get
+RUN go install github.com/jipanyang/gnxi/gnmi_get
+
+EXPOSE 8080
