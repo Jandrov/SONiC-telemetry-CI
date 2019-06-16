@@ -1,0 +1,20 @@
+
+language: bash
+os: linux
+sudo: required
+
+services:
+  - docker
+  
+install:
+  - ./install_docker_ovs.sh
+  - ./load_image.sh
+  
+before_script:
+  - ./start.sh 
+ 
+script:
+  - ./test.sh
+
+after_script:
+- ./stop.sh
