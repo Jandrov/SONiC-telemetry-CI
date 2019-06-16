@@ -17,9 +17,9 @@ sudo docker run --net=none --privileged --entrypoint /bin/bash --name host2 -it 
 #Creacion de contenedor con gnmi_get
 sudo docker run --privileged --entrypoint /bin/sh --name gnmicli -it -d gnmi_client
 
-sudo iftobridge add-link mgmt1 switch1 gestion --sip="192.18.0.11/24"
-sudo iftobridge add-link mgmt1 switch2 gestion --sip="192.18.0.12/24"
-sudo iftobridge add-link mgmt1 gnmicli gestion --sip="192.18.0.10/24"
+sudo ./iftobridge add-link mgmt1 switch1 gestion --sip="192.18.0.11/24"
+sudo ./iftobridge add-link mgmt1 switch2 gestion --sip="192.18.0.12/24"
+sudo ./iftobridge add-link mgmt1 gnmicli gestion --sip="192.18.0.10/24"
 
 #Creamos los puentes que conectan los dispositivos virtuales (hosts y switches):
 #Creamos un bridge nuevo
