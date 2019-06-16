@@ -7,6 +7,7 @@ services:
   
 install:
   - sudo apt-get install -y net-tools
+  - sudo apt-get install -y bridge-utils
   - ./install_docker_ovs.sh
   - ./load_image.sh
   
