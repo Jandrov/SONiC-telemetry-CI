@@ -75,5 +75,5 @@ sudo docker exec -d switch1 sh /sonic/scripts/update_redisDB.sh
 sudo docker exec -d switch2 sh /sonic/scripts/update_redisDB.sh
 
 #Activamos la telemetría en los switches:
-sudo docker exec switch1 ./sonic/telemetry --port 8080 --insecure --logtostderr --allow_no_client_auth &
-sudo docker exec switch2 ./sonic/telemetry --port 8080 --insecure --logtostderr --allow_no_client_auth &
+sudo docker exec -d switch1 ./sonic/telemetry --port 8080 --insecure --logtostderr --allow_no_client_auth
+sudo docker exec -d switch2 ./sonic/telemetry --port 8080 --insecure --logtostderr --allow_no_client_auth
