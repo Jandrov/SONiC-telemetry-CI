@@ -15,7 +15,7 @@ before_script:
   - sudo ./start.sh 
  
 script:
-  - sudo ./test_telemetry.sh
+  - sudo ./test.sh
 
 after_script:
   - sudo ./stop.sh
