@@ -17,9 +17,9 @@ sudo docker run --net=none --privileged --entrypoint /bin/bash --name host2 -it 
 #Creacion de contenedor con gnmi_get
 sudo docker run --privileged --entrypoint /bin/sh --name gnmicli -it -d gnmi_client
 
-sudo iftobridge add-link mgmt switch1 gestion --sip="192.18.0.11/24"
-sudo iftobridge add-link mgmt switch2 gestion --sip="192.18.0.12/24"
-sudo iftobridge add-link mgmt gnmicli gestion --sip="192.18.0.10/24"
+sudo ./iftobridge add-link mgmt switch1 gestion --sip="192.18.0.11/24"
+sudo ./iftobridge add-link mgmt switch2 gestion --sip="192.18.0.12/24"
+sudo ./iftobridge add-link mgmt gnmicli gestion --sip="192.18.0.10/24"
 
 #Creamos los puentes que conectan los dispositivos virtuales (hosts y switches):
 #Creamos un bridge nuevo
@@ -70,7 +70,7 @@ sudo docker exec -d switch2 ip netns exec sw_net ip link set sw_port1 up
 echo "Booting switches, please wait ~1 minute for switches to load"
 sudo docker exec -d switch1 sh /sonic/scripts/startup.sh
 sudo docker exec -d switch2 sh /sonic/scripts/startup.sh
-sleep 70
+sleep 120
 
 #Actualizacion de redisDB
 sudo docker exec -d switch1 sh /sonic/scripts/update_redisDB.sh
@@ -79,3 +79,5 @@ sudo docker exec -d switch2 sh /sonic/scripts/update_redisDB.sh
 #Activamos la telemetría en los switches:
 sudo docker exec -d switch1 ./sonic/telemetry --port 8080 --insecure --logtostderr --allow_no_client_auth
 sudo docker exec -d switch2 ./sonic/telemetry --port 8080 --insecure --logtostderr --allow_no_client_auth
+
+sleep 10
