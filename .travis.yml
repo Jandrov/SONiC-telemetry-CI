@@ -15,7 +15,7 @@ before_script:
   - ./start.sh 
  
 script:
-  - ./test.sh
+  - ./test_telemetry.sh
 
 after_script:
   - ./stop.sh
