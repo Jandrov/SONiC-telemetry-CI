@@ -1,12 +1,12 @@
 #!/bin/bash
 #Ping desde host1 a switch1
-sudo docker exec -it host1 ping 192.168.1.1 -c 5 -l 32
+sudo docker exec -it host1 ping 192.168.1.1 -c10
 
 #Ping desde host1 a switch2
-sudo docker exec -it host1 ping 192.168.2.1 -c 5 -l 32
+sudo docker exec -it host1 ping 192.168.2.1 -c10
 
 #Ping desde host1 a host2 
-sudo docker exec -it host2 ping 192.168.1.2 -c 5 -l 32
+sudo docker exec -it host2 ping 192.168.1.2 -c10
 
 sleep 20 
 
