@@ -58,9 +58,9 @@ sudo docker network create \
 #Creacion de contenedor con gnmi_get
 sudo docker run --privileged --entrypoint /bin/sh --name gnmicli -it -d gnmi_client
 
-sudo iftobridge add-link mgmt1 switch1 gestion --sip="192.18.0.11/24"
-sudo iftobridge add-link mgmt1 switch2 gestion --sip="192.18.0.12/24"
-sudo iftobridge add-link mgmt1 gnmicli gestion --sip="192.18.0.10/24"
+sudo ./iftobridge add-link mgmt1 switch1 gestion --sip="192.18.0.11/24"
+sudo ./iftobridge add-link mgmt1 switch2 gestion --sip="192.18.0.12/24"
+sudo ./iftobridge add-link mgmt1 gnmicli gestion --sip="192.18.0.10/24"
 
 #Actualizacion de redisDB
 sudo docker exec -d switch1 sh /sonic/scripts/update_redisDB.sh &
