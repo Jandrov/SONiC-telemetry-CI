@@ -75,3 +75,5 @@ sudo docker exec -d switch2 ./sonic/telemetry --port 8080 --insecure --logtostde
 echo "Booting switches, please wait ~1 minute for switches to load"
 sudo docker exec -d switch1 sh /sonic/scripts/startup.sh
 sudo docker exec -d switch2 sh /sonic/scripts/startup.sh
+
+sleep 180
