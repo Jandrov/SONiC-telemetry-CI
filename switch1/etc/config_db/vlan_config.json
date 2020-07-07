@@ -4,15 +4,13 @@
             "members": [
                 "Ethernet0"
             ], 
-            "vlanid": "15",
-	    "admin_status": "up"
+            "vlanid": "15"
         }, 
         "Vlan10": {
             "members": [
                 "Ethernet1"
             ], 
-            "vlanid": "10",
-	    "admin_status": "up"
+            "vlanid": "10"
         }
     },
     "VLAN_MEMBER": {
