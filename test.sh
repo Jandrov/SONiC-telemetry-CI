@@ -7,7 +7,7 @@ sudo docker exec -it host1 ping 192.168.1.1 -c5
 sudo docker exec -it switch1 ping 192.168.1.2 -c5
 
 #Ping desde host1 a host2
-#sudo docker exec -it host1 ping 192.168.2.2 -c5
+sudo docker exec -it host1 ping 192.168.2.2 -c5
 
 #Ping desde host2 a switch2
 sudo docker exec -it host2 ping 192.168.2.1 -c5
