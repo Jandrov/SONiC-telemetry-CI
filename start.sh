@@ -2,7 +2,7 @@
 
 sudo docker run --net=none --privileged --entrypoint /bin/bash --name switch1 -it -d -v $PWD/switch1:/sonic docker-sonic-p4:latest
 sudo docker run --net=none --privileged --entrypoint /bin/bash --name switch2 -it -d -v $PWD/switch2:/sonic docker-sonic-p4:latest
-sudo docker run --net=none --privileged --entrypoint /bin/bash --name host1 -it -d ubuntu:14.04 
+sudo docker run --net=none --privileged --entrypoint /bin/bash --name host1 -it -d ubuntu:14.04
 sudo docker run --net=none --privileged --entrypoint /bin/bash --name host2 -it -d ubuntu:14.04
 
 sudo ovs-vsctl add-br switch1_switch2
@@ -72,7 +72,7 @@ sudo docker exec -d switch2 ./sonic/telemetry --port 8080 --insecure --logtostde
 
 #########################################################################################################
 
-echo "Booting switches, please wait ~1 minute for switches to load"
+echo "Booting switches, please wait ~3 minutes for switches to load"
 sudo docker exec -d switch1 sh /sonic/scripts/startup.sh
 sudo docker exec -d switch2 sh /sonic/scripts/startup.sh
 

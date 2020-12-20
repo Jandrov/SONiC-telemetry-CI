@@ -18,16 +18,16 @@ sudo docker exec -it switch2 ping 192.168.2.2 -c5
 #Ping desde host2 a host1
 sudo docker exec -it host2 ping 192.168.1.2 -c5
 
-sleep 10 
+sleep 10
 
 #Monitorización switch1
 sudo echo "Paquetes recibidos por Ethernet 1 en switch1"
-sudo docker exec -it gnmicli ./bin/gnmi_get -xpath_target COUNTERS_DB -xpath interface:Ethernet1/in-pkts -target_addr 192.18.0.11:8080 -insecure -logtostderr
+sudo docker exec -it gnmicli ./bin/gnmi_get -xpath_target COUNTERS_DB -xpath interface:Ethernet1/in-pkts -target_addr 192.18.0.11:8080 -target_name switch1 -insecure -logtostderr
 sudo echo "Paquetes recibidos por Ethernet 0 en switch1"
-sudo docker exec -it gnmicli ./bin/gnmi_get -xpath_target COUNTERS_DB -xpath interface:Ethernet0/in-pkts -target_addr 192.18.0.11:8080 -insecure -logtostderr
+sudo docker exec -it gnmicli ./bin/gnmi_get -xpath_target COUNTERS_DB -xpath interface:Ethernet0/in-pkts -target_addr 192.18.0.11:8080 -target_name switch1 -insecure -logtostderr
 
 #Monitorización switch2
 sudo echo "Paquetes recibidos por Ethernet 1 en switch2"
-sudo docker exec -it gnmicli ./bin/gnmi_get -xpath_target COUNTERS_DB -xpath interface:Ethernet1/in-pkts -target_addr 192.18.0.12:8080 -insecure -logtostderr
+sudo docker exec -it gnmicli ./bin/gnmi_get -xpath_target COUNTERS_DB -xpath interface:Ethernet1/in-pkts -target_addr 192.18.0.12:8080 -target_name switch2 -insecure -logtostderr
 sudo echo "Paquetes recibidos por Ethernet 0 en switch2"
-sudo docker exec -it gnmicli ./bin/gnmi_get -xpath_target COUNTERS_DB -xpath interface:Ethernet0/in-pkts -target_addr 192.18.0.12:8080 -insecure -logtostderr
+sudo docker exec -it gnmicli ./bin/gnmi_get -xpath_target COUNTERS_DB -xpath interface:Ethernet0/in-pkts -target_addr 192.18.0.12:8080 -target_name switch2 -insecure -logtostderr
