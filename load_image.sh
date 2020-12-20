@@ -4,6 +4,7 @@ if [ ! -f docker-sonic-p4.gz ]; then
 fi
 
 sudo docker load < docker-sonic-p4.gz
+sudo docker pull ubuntu:14.04
 
 #Contruimos las imagenes atendiendo al Dockerfile
 sudo docker build -f Dockerfile_sonic .
