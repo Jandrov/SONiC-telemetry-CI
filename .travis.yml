@@ -1,6 +1,6 @@
-language: bash
+language: shell
 os: linux
-sudo: required
+dist: trusty
 
 services:
   - docker
