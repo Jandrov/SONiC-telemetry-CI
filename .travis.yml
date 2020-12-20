@@ -7,7 +7,6 @@ services:
   
 install:
   - sudo apt-get install -y net-tools
-  - sudo apt-get install -y bridge-utils
   - sudo ./install_requirements.sh
   - sudo ./load_image.sh
   
